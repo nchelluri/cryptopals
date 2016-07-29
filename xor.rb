@@ -20,7 +20,7 @@ def score_likelihood_of_english(input)
   score -= 5 unless frequency_pct(/i/i, input) >= 3 # avg is 6.966%
   score -= 5 unless frequency_pct(/n/i, input) >= 3 # avg is 6.749%
 
-  [(0..9), (11..31), (126..255)].each do |range|
+  [(0..8), (11..31), (126..255)].each do |range|
     range.each do |i|
       score -= 50 if input.include?(i.chr)
     end
