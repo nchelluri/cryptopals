@@ -3,8 +3,14 @@
 require './xor'
 
 candidates = []
-while line = gets
-  candidates += test_is_message(line.chomp)
+File.open('ch4.txt', 'r') do |f|
+  while line = f.gets
+    candidates += test_is_message(line.chomp)
+  end
 end
 
-puts best_candidate(candidates)
+msg = best_candidate(candidates)
+
+check = msg == "Now that the party is jumping\n"
+
+puts "#{msg}#{check ? 'OK' : 'BAD'}"

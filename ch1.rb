@@ -6,4 +6,3 @@ expected = 'SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t'
 actual = [[hex].pack('H*')].pack('m0*')
 
 puts "#{actual} #{expected == actual ? 'OK' : 'BAD'}"
-

@@ -6,7 +6,7 @@ def frequency_pct(candidate, input)
   100 * Float(frequency(candidate, input)) / input.length
 end
 
-def test_is_english(input)
+def score_likelihood_of_english(input)
   score = 100
 
   score -= 10 unless frequency(' ', input) >= 2
@@ -20,8 +20,12 @@ def test_is_english(input)
   score -= 5 unless frequency_pct(/i/i, input) >= 3 # avg is 6.966%
   score -= 5 unless frequency_pct(/n/i, input) >= 3 # avg is 6.749%
 
-  score -= 50 if input =~ /#{(0..31).map { |i| i.chr }.join('|')}/
-  score -= 50 if input =~ /#{(126..255).map { |i| i.chr }.join('|')}/
+  [(0..9), (11..31), (126..255)].each do |range|
+    range.each do |i|
+      score -= 50 if input.include?(i.chr)
+    end
+  end
+
   score -= 50 if frequency_pct(/#{(33..47).map { |i| Regexp.escape(i.chr) }.join('|')}|#{(58..63).map { |i| Regexp.escape(i.chr) }.join('|')}|#{(123..125).map { |i| Regexp.escape(i.chr) }.join('|')}/, input) >= 10
 
   score
@@ -36,7 +40,7 @@ def test_is_message(input)
     candidate_bytes = input_unpacked.map { |inp_byte| ord ^ inp_byte }
     candidate = candidate_bytes.pack('C*')
 
-    score = test_is_english(candidate)
+    score = score_likelihood_of_english(candidate)
     candidates << [candidate, score]
   end
 
