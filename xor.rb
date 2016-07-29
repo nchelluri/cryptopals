@@ -6,6 +6,8 @@ def frequency_pct(candidate, input)
   100 * Float(frequency(candidate, input)) / input.length
 end
 
+# BAD_VALUES = (0..8).map(&:ord).to_a + (11..31).map(&:ord).to_a + (126..255).map(&:ord).to_a
+
 def score_likelihood_of_english(input)
   score = 100
 
@@ -28,6 +30,69 @@ def score_likelihood_of_english(input)
 
   score -= 50 if frequency_pct(/#{(33..47).map { |i| Regexp.escape(i.chr) }.join('|')}|#{(58..63).map { |i| Regexp.escape(i.chr) }.join('|')}|#{(123..125).map { |i| Regexp.escape(i.chr) }.join('|')}/, input) >= 10
 
+  # score = 0
+  #
+  # input.each_char do |c|
+  #   case c.downcase
+  #     when 'e'
+  #       score += 12.702
+  #     when 't'
+  #       score += 9.056
+  #     when 'a'
+  #       score += 8.167
+  #     when 'o'
+  #       score += 7.507
+  #     when 'i'
+  #       score += 6.966
+  #     when 'n'
+  #       score += 6.749
+  #     when 's'
+  #       score += 6.327
+  #     when 'h'
+  #       score += 6.094
+  #     when 'r'
+  #       score += 5.987
+  #     when 'd'
+  #       score += 4.253
+  #     when 'l'
+  #       score += 4.025
+  #     when 'c'
+  #       score += 2.782
+  #     when 'u'
+  #       score += 2.758
+  #     when 'm'
+  #       score += 2.406
+  #     when 'w'
+  #       score += 2.361
+  #     when 'f'
+  #       score += 2.228
+  #     when 'g'
+  #       score += 2.015
+  #     when 'y'
+  #       score += 1.974
+  #     when 'p'
+  #       score += 1.929
+  #     when 'b'
+  #       score += 1.492
+  #     when 'v'
+  #       score += 0.978
+  #     when 'k'
+  #       score += 0.772
+  #     when 'j'
+  #       score += 0.153
+  #     when 'x'
+  #       score += 0.150
+  #     when 'q'
+  #       score += 0.095
+  #     when 'z'
+  #       score += 0.074
+  #     when *BAD_VALUES
+  #       score -= 50
+  #   end
+  # end
+
+  puts "#{input} #{score}" if input =~ /Cookin|iEEACDM/
+
   score
 end
 
@@ -41,12 +106,27 @@ def test_is_message(input)
     candidate = candidate_bytes.pack('C*')
 
     score = score_likelihood_of_english(candidate)
-    candidates << [candidate, score]
+    candidates << [candidate, score, ord]
   end
 
   candidates
 end
 
-def best_candidate(candidates)
-  candidates.sort_by { |c| -c[1] }.first.first
+def best_candidate(candidates, return_key = false)
+  best_candidate = candidates.sort_by { |c| -c[1] }.first
+  return_key ? best_candidate : best_candidate.first
+end
+
+def xor_encrypt(key, input)
+  key_bytes = key.unpack('C*')
+
+  input_bytes = input.unpack('C*')
+
+  encrypted_bytes = []
+
+  for i in 0...input_bytes.length
+    encrypted_bytes << (input_bytes[i] ^ key_bytes[i % key_bytes.length])
+  end
+
+  encrypted_bytes.pack('C*').unpack('H*').first
 end

@@ -1,18 +1,6 @@
 #!/usr/bin/env ruby
 
-def xor_encrypt(key, input)
-  key_bytes = key.unpack('C*')
-
-  input_bytes = input.unpack('C*')
-
-  encrypted_bytes = []
-
-  for i in 0...input_bytes.length
-    encrypted_bytes << (input_bytes[i] ^ key_bytes[i % key_bytes.length])
-  end
-
-  encrypted_bytes.pack('C*').unpack('H*').first
-end
+require './xor'
 
 check = false
 if ARGV.length != 2
@@ -33,3 +21,7 @@ if check
 end
 
 print "\n"
+
+# decryption
+# new = [actual].pack('H*')
+# puts [xor_encrypt(key, new)].pack('H*')
