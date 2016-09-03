@@ -91,8 +91,6 @@ def score_likelihood_of_english(input)
   #   end
   # end
 
-  puts "#{input} #{score}" if input =~ /Cookin|iEEACDM/
-
   score
 end
 
@@ -129,4 +127,29 @@ def xor_encrypt(key, input)
   end
 
   encrypted_bytes.pack('C*').unpack('H*').first
+end
+
+
+def hamming_distance(a, b)
+  unless a.length == b.length
+    puts "wrong length"
+    return 0
+  end
+
+  a_xor_b = []
+
+  (0...a.length).each do |i|
+    a_xor_b << (a[i] ^ b[i])
+  end
+
+  num_ones = 0
+  a_xor_b.each do |b|
+    [1,2,4,8,16,32,64,128].each do |val|
+      if val & b > 0
+        num_ones += 1
+      end
+    end
+  end
+
+  num_ones
 end
